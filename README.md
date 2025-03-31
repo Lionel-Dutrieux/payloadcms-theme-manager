@@ -12,6 +12,13 @@ A powerful and flexible theme management system for PayloadCMS that enables dyna
 - 🌍 **Multilingual**: Admin interface available in English, French, and Dutch
 - 🚀 **Performance-Focused**: Efficient caching and minimal runtime impact
 
+## Showcase
+
+<video width="100%" controls>
+  <source src="https://i.lionel-dutrieux.com/u/rUvNbh.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
 ## Quick Start
 
 ### 1. Install Required Files
