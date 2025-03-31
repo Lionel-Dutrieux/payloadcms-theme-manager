@@ -33,6 +33,23 @@ export function ColorSelector({ path, field }: ColorSelectorProps) {
 
   const displayColor = normalizeColor(value)
 
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value
+    if (!input) {
+      setValue(null)
+      return
+    }
+
+    // If input is a valid hex color without #, add it
+    if (/^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(input)) {
+      setValue(`#${input}`)
+      return
+    }
+
+    // Otherwise just set the value as is
+    setValue(input)
+  }
+
   return (
     <div className="color-selector__field">
       <FieldLabel htmlFor={path} label={field.label || field.name} required={field.required} />
@@ -42,7 +59,7 @@ export function ColorSelector({ path, field }: ColorSelectorProps) {
           id={path}
           name={path}
           value={displayColor || ''}
-          onChange={(e) => setValue(e.target.value || null)}
+          onChange={handleTextChange}
           placeholder={field.placeholder || '#000000'}
           required={field.required}
           className="color-selector__text-field"
