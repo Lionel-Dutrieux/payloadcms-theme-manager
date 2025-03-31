@@ -6,23 +6,97 @@
  * and re-run `payload generate:types` to regenerate this file.
  */
 
+/**
+ * Supported timezones in IANA format.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "supportedTimezones".
+ */
+export type SupportedTimezones =
+  | 'Pacific/Midway'
+  | 'Pacific/Niue'
+  | 'Pacific/Honolulu'
+  | 'Pacific/Rarotonga'
+  | 'America/Anchorage'
+  | 'Pacific/Gambier'
+  | 'America/Los_Angeles'
+  | 'America/Tijuana'
+  | 'America/Denver'
+  | 'America/Phoenix'
+  | 'America/Chicago'
+  | 'America/Guatemala'
+  | 'America/New_York'
+  | 'America/Bogota'
+  | 'America/Caracas'
+  | 'America/Santiago'
+  | 'America/Buenos_Aires'
+  | 'America/Sao_Paulo'
+  | 'Atlantic/South_Georgia'
+  | 'Atlantic/Azores'
+  | 'Atlantic/Cape_Verde'
+  | 'Europe/London'
+  | 'Europe/Berlin'
+  | 'Africa/Lagos'
+  | 'Europe/Athens'
+  | 'Africa/Cairo'
+  | 'Europe/Moscow'
+  | 'Asia/Riyadh'
+  | 'Asia/Dubai'
+  | 'Asia/Baku'
+  | 'Asia/Karachi'
+  | 'Asia/Tashkent'
+  | 'Asia/Calcutta'
+  | 'Asia/Dhaka'
+  | 'Asia/Almaty'
+  | 'Asia/Jakarta'
+  | 'Asia/Bangkok'
+  | 'Asia/Shanghai'
+  | 'Asia/Singapore'
+  | 'Asia/Tokyo'
+  | 'Asia/Seoul'
+  | 'Australia/Brisbane'
+  | 'Australia/Sydney'
+  | 'Pacific/Guam'
+  | 'Pacific/Noumea'
+  | 'Pacific/Auckland'
+  | 'Pacific/Fiji';
+
 export interface Config {
   auth: {
     users: UserAuthOperations;
   };
+  blocks: {};
   collections: {
     users: User;
     media: Media;
+    'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  db: {
-    defaultIDType: string;
+  collectionsJoins: {};
+  collectionsSelect: {
+    users: UsersSelect<false> | UsersSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
+    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
+    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
+    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
-  globals: {};
+  db: {
+    defaultIDType: number;
+  };
+  globals: {
+    theme: Theme;
+  };
+  globalsSelect: {
+    theme: ThemeSelect<false> | ThemeSelect<true>;
+  };
   locale: null;
   user: User & {
     collection: 'users';
+  };
+  jobs: {
+    tasks: unknown;
+    workflows: unknown;
   };
 }
 export interface UserAuthOperations {
@@ -48,7 +122,7 @@ export interface UserAuthOperations {
  * via the `definition` "users".
  */
 export interface User {
-  id: string;
+  id: number;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -65,7 +139,7 @@ export interface User {
  * via the `definition` "media".
  */
 export interface Media {
-  id: string;
+  id: number;
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -81,13 +155,36 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-locked-documents".
+ */
+export interface PayloadLockedDocument {
+  id: number;
+  document?:
+    | ({
+        relationTo: 'users';
+        value: number | User;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: number | Media;
+      } | null);
+  globalSlug?: string | null;
+  user: {
+    relationTo: 'users';
+    value: number | User;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: string;
+  id: number;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   key?: string | null;
   value?:
@@ -107,11 +204,432 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: string;
+  id: number;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users_select".
+ */
+export interface UsersSelect<T extends boolean = true> {
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-locked-documents_select".
+ */
+export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
+  document?: T;
+  globalSlug?: T;
+  user?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-preferences_select".
+ */
+export interface PayloadPreferencesSelect<T extends boolean = true> {
+  user?: T;
+  key?: T;
+  value?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-migrations_select".
+ */
+export interface PayloadMigrationsSelect<T extends boolean = true> {
+  name?: T;
+  batch?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "theme".
+ */
+export interface Theme {
+  id: number;
+  settings?: {
+    enabled?: boolean | null;
+  };
+  /**
+   * Configure colors for both light and dark modes
+   */
+  colors?: {
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightBackground?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightForeground?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightCard?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightCardForeground?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightPopover?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightPopoverForeground?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightPrimary?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightPrimaryForeground?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightSecondary?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightSecondaryForeground?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightMuted?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightMutedForeground?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightAccent?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightAccentForeground?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightDestructive?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightBorder?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightInput?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightRing?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightChart1?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightChart2?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightChart3?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightChart4?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightChart5?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightSidebar?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightSidebarForeground?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightSidebarPrimary?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightSidebarPrimaryForeground?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightSidebarAccent?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightSidebarAccentForeground?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightSidebarBorder?: string | null;
+    /**
+     * light hex color (e.g. #FF5500)
+     */
+    lightSidebarRing?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkBackground?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkForeground?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkCard?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkCardForeground?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkPopover?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkPopoverForeground?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkPrimary?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkPrimaryForeground?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkSecondary?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkSecondaryForeground?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkMuted?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkMutedForeground?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkAccent?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkAccentForeground?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkDestructive?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkBorder?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkInput?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkRing?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkChart1?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkChart2?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkChart3?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkChart4?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkChart5?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkSidebar?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkSidebarForeground?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkSidebarPrimary?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkSidebarPrimaryForeground?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkSidebarAccent?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkSidebarAccentForeground?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkSidebarBorder?: string | null;
+    /**
+     * dark hex color (e.g. #FF5500)
+     */
+    darkSidebarRing?: string | null;
+  };
+  sizes?: {
+    /**
+     * Enter a valid size (e.g. 0.625rem, 10px, 2em)
+     */
+    radius?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "theme_select".
+ */
+export interface ThemeSelect<T extends boolean = true> {
+  settings?:
+    | T
+    | {
+        enabled?: T;
+      };
+  colors?:
+    | T
+    | {
+        lightBackground?: T;
+        lightForeground?: T;
+        lightCard?: T;
+        lightCardForeground?: T;
+        lightPopover?: T;
+        lightPopoverForeground?: T;
+        lightPrimary?: T;
+        lightPrimaryForeground?: T;
+        lightSecondary?: T;
+        lightSecondaryForeground?: T;
+        lightMuted?: T;
+        lightMutedForeground?: T;
+        lightAccent?: T;
+        lightAccentForeground?: T;
+        lightDestructive?: T;
+        lightBorder?: T;
+        lightInput?: T;
+        lightRing?: T;
+        lightChart1?: T;
+        lightChart2?: T;
+        lightChart3?: T;
+        lightChart4?: T;
+        lightChart5?: T;
+        lightSidebar?: T;
+        lightSidebarForeground?: T;
+        lightSidebarPrimary?: T;
+        lightSidebarPrimaryForeground?: T;
+        lightSidebarAccent?: T;
+        lightSidebarAccentForeground?: T;
+        lightSidebarBorder?: T;
+        lightSidebarRing?: T;
+        darkBackground?: T;
+        darkForeground?: T;
+        darkCard?: T;
+        darkCardForeground?: T;
+        darkPopover?: T;
+        darkPopoverForeground?: T;
+        darkPrimary?: T;
+        darkPrimaryForeground?: T;
+        darkSecondary?: T;
+        darkSecondaryForeground?: T;
+        darkMuted?: T;
+        darkMutedForeground?: T;
+        darkAccent?: T;
+        darkAccentForeground?: T;
+        darkDestructive?: T;
+        darkBorder?: T;
+        darkInput?: T;
+        darkRing?: T;
+        darkChart1?: T;
+        darkChart2?: T;
+        darkChart3?: T;
+        darkChart4?: T;
+        darkChart5?: T;
+        darkSidebar?: T;
+        darkSidebarForeground?: T;
+        darkSidebarPrimary?: T;
+        darkSidebarPrimaryForeground?: T;
+        darkSidebarAccent?: T;
+        darkSidebarAccentForeground?: T;
+        darkSidebarBorder?: T;
+        darkSidebarRing?: T;
+      };
+  sizes?:
+    | T
+    | {
+        radius?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

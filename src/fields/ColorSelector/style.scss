@@ -1,0 +1,106 @@
+@import '~@payloadcms/ui/scss';
+
+.color-selector {
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    margin-bottom: 24px;
+  }
+
+  &__input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  &__text-field {
+    width: 100%;
+    height: 36px;
+    padding: 0 12px;
+    padding-right: 36px;
+    border: 1px solid var(--theme-elevation-150);
+    border-radius: var(--style-radius-s);
+    font-family: var(--font-body);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+    color: var(--theme-elevation-800);
+    background-color: var(--theme-input-bg);
+    outline: none;
+    transition: all 0.2s ease-in-out;
+
+    &:focus {
+      border-color: var(--theme-elevation-400);
+      box-shadow: 0 0 0 1px var(--theme-elevation-400);
+    }
+
+    &::placeholder {
+      color: var(--theme-elevation-400);
+    }
+  }
+
+  &__color-preview-container {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px var(--theme-elevation-100);
+  }
+
+  &__color-preview {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__color-picker {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__description {
+    font-size: var(--font-size-s);
+    color: var(--theme-elevation-500);
+    margin-top: 0.25rem;
+  }
+}
+
+/* Dark mode styles */
+[data-theme='dark'] {
+  .color-selector {
+    &__text-field {
+      background-color: var(--theme-elevation-50);
+      color: var(--theme-elevation-1000);
+      border-color: var(--theme-elevation-150);
+
+      &:focus {
+        border-color: var(--theme-elevation-400);
+        box-shadow: 0 0 0 1px var(--theme-elevation-400);
+      }
+
+      &::placeholder {
+        color: var(--theme-elevation-400);
+      }
+    }
+
+    &__color-preview-container {
+      box-shadow: 0 0 0 1px var(--theme-elevation-100);
+    }
+
+    &__description {
+      color: var(--theme-elevation-500);
+    }
+  }
+}
