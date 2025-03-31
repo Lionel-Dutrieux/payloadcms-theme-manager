@@ -14,10 +14,7 @@ A powerful and flexible theme management system for PayloadCMS that enables dyna
 
 ## Showcase
 
-<video width="100%" controls>
-  <source src="data/preview.mov" type="video/quicktime">
-  Your browser does not support the video tag.
-</video>
+https://user-images.githubusercontent.com/assets/data/preview.mov?raw=true
 
 ## Quick Start
 
