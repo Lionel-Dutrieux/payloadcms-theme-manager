@@ -14,7 +14,7 @@ A powerful and flexible theme management system for PayloadCMS that enables dyna
 
 ## Showcase
 
-[Watch the video](https://i.lionel-dutrieux.com/u/cIkAIm.mov) if it's not displayed above.
+[Watch the video](https://i.lionel-dutrieux.com/u/rUvNbh.mp4) if it's not displayed above.
 
 <video width="100%" controls>
   <source src="https://i.lionel-dutrieux.com/u/cIkAIm.mov" type="video/mp4">
