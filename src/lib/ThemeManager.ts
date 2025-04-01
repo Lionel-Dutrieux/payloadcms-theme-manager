@@ -12,16 +12,16 @@ import {
   getColorVariableName,
 } from '../constants/themeConstants'
 import { ThemeSizes } from '../globals/Theme'
+import { getPresetById, ThemeColors, PresetValue } from '../constants/themePresets'
 
 // Fix for the Theme type until payload-types.ts is regenerated
 // This extends the existing Theme type to include the sizes property
 interface ExtendedTheme extends Theme {
   settings?: {
-    enabled?: boolean
+    enabled?: boolean | null
+    usePreset?: PresetValue | null
   }
-  sizes?: {
-    [key in ThemeSizeKey]?: string | null
-  }
+  sizes?: ThemeSizes
 }
 
 // Cache tag for theme data
@@ -73,6 +73,15 @@ export const invalidateThemeCache = () => {
 }
 
 /**
+ * Convert theme colors to CSS variables
+ */
+function generateColorVariables(colors: ThemeColors): string[] {
+  return Object.entries(colors).map(([key, value]) => {
+    return `${cssKeys[key as ThemeColorKey]}: ${value};`
+  })
+}
+
+/**
  * Generate CSS variables from theme object
  */
 export function generateThemeCSS(theme: ExtendedTheme | null): string {
@@ -82,11 +91,53 @@ export function generateThemeCSS(theme: ExtendedTheme | null): string {
     return ''
   }
 
-  const { colors, sizes } = theme
-  console.log('[ThemeManager] Processing theme:', { colors, sizes })
-  const isDarkModeEnabled = DARK_MODE_ENABLED // Controlled only by constant, not by admin UI
+  // Check if using a preset theme
+  if (theme.settings.usePreset && theme.settings.usePreset !== 'custom') {
+    const preset = getPresetById(theme.settings.usePreset)
+    if (!preset) {
+      console.error(`[ThemeManager] Preset theme not found: ${theme.settings.usePreset}`)
+      return ''
+    }
 
-  // Only include CSS variables that have defined values
+    // Generate CSS from preset
+    const lightVars = generateColorVariables(preset.colors.light)
+    const darkVars = DARK_MODE_ENABLED ? generateColorVariables(preset.colors.dark) : []
+
+    // Add sizes
+    Object.entries(preset.sizes).forEach(([key, value]) => {
+      if (value) {
+        const cssKey = sizeCssKeys[key as ThemeSizeKey]
+        lightVars.push(`${cssKey}: ${value};`)
+        if (DARK_MODE_ENABLED) {
+          darkVars.push(`${cssKey}: ${value};`)
+        }
+      }
+    })
+
+    // Generate final CSS
+    if (DARK_MODE_ENABLED && darkVars.length > 0) {
+      return `
+        :root {
+          ${lightVars.join('\n          ')}
+        }
+        
+        .dark {
+          ${darkVars.join('\n          ')}
+        }
+      `
+    }
+
+    return `
+      :root {
+        ${lightVars.join('\n        ')}
+      }
+    `
+  }
+
+  // Handle custom theme
+  const { colors, sizes } = theme
+  console.log('[ThemeManager] Processing custom theme:', { colors, sizes })
+
   const lightVars: string[] = []
   const darkVars: string[] = []
 
@@ -102,37 +153,28 @@ export function generateThemeCSS(theme: ExtendedTheme | null): string {
     const lightValue = colors?.[lightFieldName as keyof typeof colors]
 
     if (lightValue) {
-      // Use the original CSS variable name (--primary, etc.) for light mode
       lightVars.push(`${cssKeys[key]}: ${lightValue};`)
     }
 
     // Process dark mode values if dark mode is enabled
-    if (isDarkModeEnabled) {
+    if (DARK_MODE_ENABLED) {
       const darkValue = colors?.[darkFieldName as keyof typeof colors]
 
       if (darkValue) {
-        // For dark mode, we don't use a -dark suffix, we use the same variable name
-        // but under the .dark class selector
         darkVars.push(`${cssKeys[key]}: ${darkValue};`)
       } else if (lightValue) {
-        // If no dark value is set but light value exists, use light value as fallback
         darkVars.push(`${cssKeys[key]}: ${lightValue};`)
       }
     }
   })
 
-  // Process each size dynamically using the keys from sizeCssKeys
-  Object.keys(sizeCssKeys).forEach((sizeName) => {
-    const key = sizeName as ThemeSizeKey
-    const value = sizes?.[key]
-
+  // Process sizes
+  Object.entries(sizes || {}).forEach(([key, value]) => {
     if (value) {
-      // Add size to light mode variables
-      lightVars.push(`${sizeCssKeys[key]}: ${value};`)
-
-      // Also add to dark mode - sizes typically don't change between modes
-      if (isDarkModeEnabled) {
-        darkVars.push(`${sizeCssKeys[key]}: ${value};`)
+      const cssKey = sizeCssKeys[key as ThemeSizeKey]
+      lightVars.push(`${cssKey}: ${value};`)
+      if (DARK_MODE_ENABLED) {
+        darkVars.push(`${cssKey}: ${value};`)
       }
     }
   })
@@ -143,7 +185,7 @@ export function generateThemeCSS(theme: ExtendedTheme | null): string {
   }
 
   // Generate CSS with .dark class selector for dark mode if enabled
-  if (isDarkModeEnabled && darkVars.length > 0) {
+  if (DARK_MODE_ENABLED && darkVars.length > 0) {
     return `
       :root {
         ${lightVars.join('\n        ')}

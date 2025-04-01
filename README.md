@@ -7,6 +7,7 @@ A powerful and flexible theme management system for PayloadCMS that enables dyna
 - 🎨 **Dynamic Theme Management**: Full control over your site's theme through the PayloadCMS admin panel
 - 🎯 **CSS Variables**: Manage colors and sizes with built-in validation
 - 🌓 **Light/Dark Mode**: Seamless support for light and dark color schemes
+- 🎭 **Theme Presets**: Ready-to-use theme presets with both light and dark variants
 - ⚡ **Next.js Integration**: Optimized performance with Next.js API and caching
 - 🔒 **Type-Safe**: Complete TypeScript support for enhanced developer experience
 - 🌍 **Multilingual**: Admin interface available in English, French, and Dutch
@@ -30,7 +31,8 @@ Copy these core files to your PayloadCMS project:
 ```bash
 src/
 ├── constants/
-│   └── themeConstants.ts    # Core theme configuration
+│   ├── themeConstants.ts    # Core theme configuration
+│   └── themePresets.ts     # Theme presets definitions
 ├── globals/
 │   └── Theme.ts            # PayloadCMS global configuration
 └── lib/
@@ -76,24 +78,112 @@ export default async function RootLayout({
 }
 ```
 
-## Architecture
+## Theme Presets
 
-The theme system consists of three main components working together:
+The theme system includes a powerful preset system that allows you to define and use pre-configured themes. Each preset includes both light and dark mode variants.
 
-1. **Theme Constants** (`themeConstants.ts`)
-   - Defines available theme options
-   - Sets default values
-   - Implements validation rules
+### Using Theme Presets
 
-2. **Theme Global** (`Theme.ts`)
-   - Creates PayloadCMS global configuration
-   - Manages theme settings storage
-   - Handles admin interface structure
+1. In the PayloadCMS admin panel, navigate to the Theme global
+2. Enable the theme using the checkbox
+3. Choose a preset from the dropdown menu
+4. Save your changes
 
-3. **Theme Manager** (`ThemeManager.ts`)
-   - Manages theme data fetching
-   - Implements caching strategy
-   - Generates CSS variables
+### Creating Custom Presets
+
+Add your own theme presets by modifying `src/constants/themePresets.ts`:
+
+```typescript
+export const themePresets: ThemePreset[] = [
+  {
+    id: 'my-custom-theme',
+    name: 'My Custom Theme',
+    colors: {
+      light: {
+        background: '#ffffff',
+        foreground: '#000000',
+        primary: '#3b82f6',
+        primaryForeground: '#ffffff',
+        // ... other color variables
+      },
+      dark: {
+        background: '#000000',
+        foreground: '#ffffff',
+        primary: '#60a5fa',
+        primaryForeground: '#000000',
+        // ... other color variables
+      }
+    },
+    sizes: {
+      radius: '0.5rem',
+    },
+  },
+  // ... other presets
+]
+```
+
+### Theme Color Structure
+
+Each preset must implement the `ThemeColors` interface:
+
+```typescript
+export type ThemeColors = {
+  background: string
+  foreground: string
+  card: string
+  cardForeground: string
+  popover: string
+  popoverForeground: string
+  primary: string
+  primaryForeground: string
+  secondary: string
+  secondaryForeground: string
+  muted: string
+  mutedForeground: string
+  accent: string
+  accentForeground: string
+  destructive: string
+  border: string
+  input: string
+  ring: string
+}
+```
+
+### Adding New Color Variables
+
+1. Add the new variable to the `ThemeColors` type in `themePresets.ts`:
+```typescript
+export type ThemeColors = {
+  // ... existing colors
+  newColor: string
+  newColorForeground: string
+}
+```
+
+2. Add the CSS variable mapping in `themeConstants.ts`:
+```typescript
+export const cssKeys = {
+  // ... existing keys
+  newColor: '--new-color',
+  newColorForeground: '--new-color-foreground',
+}
+```
+
+3. Update all theme presets with the new colors:
+```typescript
+colors: {
+  light: {
+    // ... existing colors
+    newColor: '#value',
+    newColorForeground: '#value',
+  },
+  dark: {
+    // ... existing colors
+    newColor: '#value',
+    newColorForeground: '#value',
+  }
+}
+```
 
 ## Dark Mode Implementation
 

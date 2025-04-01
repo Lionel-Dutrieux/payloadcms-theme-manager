@@ -7,6 +7,7 @@ import {
   ThemeSizeKey,
   DARK_MODE_ENABLED,
 } from '../constants/themeConstants'
+import { themePresets } from '../constants/themePresets'
 
 // Define the theme colors structure that matches our payload-types.ts
 export type ThemeColors = Record<string, string | null>
@@ -60,11 +61,43 @@ const themeFields: Field[] = [
         },
         defaultValue: false,
       },
+      {
+        name: 'usePreset',
+        type: 'select',
+        label: {
+          en: 'Use Theme Preset',
+          fr: 'Utiliser un Thème Prédéfini',
+          nl: 'Gebruik Thema Voorinstelling',
+        },
+        options: [
+          {
+            label: {
+              en: 'Custom Theme',
+              fr: 'Thème Personnalisé',
+              nl: 'Aangepast Thema',
+            },
+            value: 'custom',
+          },
+          ...themePresets.map((preset) => ({
+            label: preset.name,
+            value: preset.id,
+          })),
+        ],
+        defaultValue: 'custom',
+        admin: {
+          description: {
+            en: 'Select a predefined theme or create a custom one',
+            fr: 'Sélectionnez un thème prédéfini ou créez-en un personnalisé',
+            nl: 'Selecteer een voorgedefinieerd thema of maak een aangepast thema',
+          },
+        },
+      },
     ],
   },
 ]
 
 // Add colors group with tabs for light/dark mode if dark mode is enabled
+// Only show if usePreset is set to 'custom'
 themeFields.push({
   name: 'colors',
   type: 'group',
@@ -85,11 +118,15 @@ themeFields.push({
           fr: 'Configurer les couleurs du thème',
           nl: 'Configureer themakleuren',
         },
+    condition: (data, siblingData) => {
+      return siblingData?.settings?.usePreset === 'custom'
+    },
   },
   fields: DARK_MODE_ENABLED ? [colorTabsField] : generateLightModeColorFields(),
 })
 
 // Add sizes group
+// Only show if usePreset is set to 'custom'
 themeFields.push({
   name: 'sizes',
   type: 'group',
@@ -97,6 +134,11 @@ themeFields.push({
     en: 'Sizes',
     fr: 'Tailles',
     nl: 'Maten',
+  },
+  admin: {
+    condition: (data, siblingData) => {
+      return siblingData?.settings?.usePreset === 'custom'
+    },
   },
   fields: generateSizeFields(),
 })

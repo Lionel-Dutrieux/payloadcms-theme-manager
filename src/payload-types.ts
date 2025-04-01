@@ -283,6 +283,25 @@ export interface Theme {
   id: number;
   settings?: {
     enabled?: boolean | null;
+    /**
+     * Select a predefined theme or create a custom one
+     */
+    usePreset?:
+      | (
+          | 'custom'
+          | 'bardahl'
+          | 'ocean-breeze'
+          | 'midnight-violet'
+          | 'autumn-warmth'
+          | 'nature'
+          | 'corporate-clarity'
+          | 'elegant-slate'
+          | 'tech-indigo'
+          | 'candy-pop'
+          | 'sunset-vibes'
+          | 'luxinnovation'
+        )
+      | null;
   };
   /**
    * Configure colors for both light and dark modes
@@ -555,6 +574,7 @@ export interface ThemeSelect<T extends boolean = true> {
     | T
     | {
         enabled?: T;
+        usePreset?: T;
       };
   colors?:
     | T
