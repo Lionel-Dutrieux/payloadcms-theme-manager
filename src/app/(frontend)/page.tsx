@@ -5,9 +5,11 @@ import { SectionCards } from '@/components/ui/section-cards'
 import { SiteHeader } from '@/components/ui/site-header'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import data from './data.json'
+import { RefreshRouteOnSave } from '@/components/ui/RefreshRouteOnSave'
 export default function HomePage() {
   return (
     <SidebarProvider>
+      <RefreshRouteOnSave />
       <AppSidebar variant="inset" />
       <SidebarInset>
         <SiteHeader />

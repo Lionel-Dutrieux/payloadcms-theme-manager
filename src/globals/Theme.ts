@@ -150,6 +150,11 @@ export const Theme: GlobalConfig = {
   access: {
     read: () => true,
   },
+  admin: {
+    livePreview: {
+      url: '/',
+    },
+  },
   hooks: {
     afterChange: [
       // Invalidate theme cache after any changes
