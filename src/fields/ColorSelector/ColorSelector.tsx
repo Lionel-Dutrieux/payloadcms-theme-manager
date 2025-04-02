@@ -1,6 +1,6 @@
 'use client'
 
-import { ColorFormats, ColorValue } from '@/features/theme'
+import { ColorFormats, ColorValue } from '@/features/theme/models/types'
 import { FieldLabel, useField } from '@payloadcms/ui'
 import chroma from 'chroma-js'
 import React, { useCallback, useMemo, useRef, useState } from 'react'
