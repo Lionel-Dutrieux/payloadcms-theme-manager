@@ -1,21 +1,14 @@
-import { GlobalConfig, Field, TabsField } from 'payload'
-import { invalidateThemeCache } from '../lib/ThemeManager'
+import { themePresets } from '@/features/theme/config/presets'
+import { Field, GlobalConfig, TabsField } from 'payload'
+
+import { revalidateTag } from 'next/cache'
 import {
-  generateLightModeColorFields,
-  generateDarkModeColorFields,
-  generateSizeFields,
-  ThemeSizeKey,
   DARK_MODE_ENABLED,
-} from '../constants/themeConstants'
-import { themePresets } from '../constants/themePresets'
-
-// Define the theme colors structure that matches our payload-types.ts
-export type ThemeColors = Record<string, string | null>
-
-// Define the theme sizes structure
-export type ThemeSizes = {
-  [K in ThemeSizeKey]?: string | null
-}
+  generateDarkModeColorFields,
+  generateLightModeColorFields,
+  generateSizeFields,
+  THEME_CACHE_TAG,
+} from '../features/theme/config/constants'
 
 // Create the color tabs field
 const colorTabsField: TabsField = {
@@ -159,7 +152,7 @@ export const Theme: GlobalConfig = {
     afterChange: [
       // Invalidate theme cache after any changes
       async () => {
-        invalidateThemeCache()
+        revalidateTag(THEME_CACHE_TAG)
       },
     ],
   },

@@ -286,280 +286,76 @@ export interface Theme {
     /**
      * Select a predefined theme or create a custom one
      */
-    usePreset?:
-      | (
-          | 'custom'
-          | 'bardahl'
-          | 'ocean-breeze'
-          | 'midnight-violet'
-          | 'autumn-warmth'
-          | 'nature'
-          | 'corporate-clarity'
-          | 'elegant-slate'
-          | 'tech-indigo'
-          | 'candy-pop'
-          | 'sunset-vibes'
-          | 'luxinnovation'
-        )
-      | null;
+    usePreset?: ('custom' | 'bardahl' | 'luxinnovation' | 'computerland') | null;
   };
   /**
    * Configure colors for both light and dark modes
    */
   colors?: {
-    /**
-     * light hex color (e.g. #FF5500)
-     */
-    lightBackground?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
-    lightForeground?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
-    lightCard?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
-    lightCardForeground?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
-    lightPopover?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
-    lightPopoverForeground?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightPrimary?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightPrimaryForeground?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightSecondary?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightSecondaryForeground?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightMuted?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightMutedForeground?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightAccent?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightAccentForeground?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightDestructive?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
+    lightDestructiveForeground?: string | null;
     lightBorder?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightInput?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightRing?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
+    lightBackground?: string | null;
+    lightForeground?: string | null;
+    lightCard?: string | null;
+    lightCardForeground?: string | null;
+    lightPopover?: string | null;
+    lightPopoverForeground?: string | null;
     lightChart1?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightChart2?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightChart3?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightChart4?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightChart5?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightSidebar?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightSidebarForeground?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightSidebarPrimary?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightSidebarPrimaryForeground?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightSidebarAccent?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightSidebarAccentForeground?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
     lightSidebarBorder?: string | null;
-    /**
-     * light hex color (e.g. #FF5500)
-     */
-    lightSidebarRing?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
-    darkBackground?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
-    darkForeground?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
-    darkCard?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
-    darkCardForeground?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
-    darkPopover?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
-    darkPopoverForeground?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkPrimary?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkPrimaryForeground?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkSecondary?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkSecondaryForeground?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkMuted?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkMutedForeground?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkAccent?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkAccentForeground?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkDestructive?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
+    darkDestructiveForeground?: string | null;
     darkBorder?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkInput?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkRing?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
+    darkBackground?: string | null;
+    darkForeground?: string | null;
+    darkCard?: string | null;
+    darkCardForeground?: string | null;
+    darkPopover?: string | null;
+    darkPopoverForeground?: string | null;
     darkChart1?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkChart2?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkChart3?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkChart4?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkChart5?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkSidebar?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkSidebarForeground?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkSidebarPrimary?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkSidebarPrimaryForeground?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkSidebarAccent?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkSidebarAccentForeground?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
     darkSidebarBorder?: string | null;
-    /**
-     * dark hex color (e.g. #FF5500)
-     */
-    darkSidebarRing?: string | null;
   };
   sizes?: {
-    /**
-     * Enter a valid size (e.g. 0.625rem, 10px, 2em)
-     */
     radius?: string | null;
   };
   updatedAt?: string | null;
@@ -579,12 +375,6 @@ export interface ThemeSelect<T extends boolean = true> {
   colors?:
     | T
     | {
-        lightBackground?: T;
-        lightForeground?: T;
-        lightCard?: T;
-        lightCardForeground?: T;
-        lightPopover?: T;
-        lightPopoverForeground?: T;
         lightPrimary?: T;
         lightPrimaryForeground?: T;
         lightSecondary?: T;
@@ -594,9 +384,16 @@ export interface ThemeSelect<T extends boolean = true> {
         lightAccent?: T;
         lightAccentForeground?: T;
         lightDestructive?: T;
+        lightDestructiveForeground?: T;
         lightBorder?: T;
         lightInput?: T;
         lightRing?: T;
+        lightBackground?: T;
+        lightForeground?: T;
+        lightCard?: T;
+        lightCardForeground?: T;
+        lightPopover?: T;
+        lightPopoverForeground?: T;
         lightChart1?: T;
         lightChart2?: T;
         lightChart3?: T;
@@ -609,13 +406,6 @@ export interface ThemeSelect<T extends boolean = true> {
         lightSidebarAccent?: T;
         lightSidebarAccentForeground?: T;
         lightSidebarBorder?: T;
-        lightSidebarRing?: T;
-        darkBackground?: T;
-        darkForeground?: T;
-        darkCard?: T;
-        darkCardForeground?: T;
-        darkPopover?: T;
-        darkPopoverForeground?: T;
         darkPrimary?: T;
         darkPrimaryForeground?: T;
         darkSecondary?: T;
@@ -625,9 +415,16 @@ export interface ThemeSelect<T extends boolean = true> {
         darkAccent?: T;
         darkAccentForeground?: T;
         darkDestructive?: T;
+        darkDestructiveForeground?: T;
         darkBorder?: T;
         darkInput?: T;
         darkRing?: T;
+        darkBackground?: T;
+        darkForeground?: T;
+        darkCard?: T;
+        darkCardForeground?: T;
+        darkPopover?: T;
+        darkPopoverForeground?: T;
         darkChart1?: T;
         darkChart2?: T;
         darkChart3?: T;
@@ -640,7 +437,6 @@ export interface ThemeSelect<T extends boolean = true> {
         darkSidebarAccent?: T;
         darkSidebarAccentForeground?: T;
         darkSidebarBorder?: T;
-        darkSidebarRing?: T;
       };
   sizes?:
     | T

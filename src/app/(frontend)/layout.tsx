@@ -1,6 +1,7 @@
-import { ThemeProvider } from '@/providers/ThemeProvider'
+import { getTheme } from '@/features/theme/api/getTheme'
+import { ThemeProvider } from '@/features/theme/components/ThemeProvider'
+import { generateThemeCSS } from '@/features/theme/utils/css'
 import React from 'react'
-import { getThemeCSS } from '../../lib/ThemeManager'
 import './styles.css'
 
 export const metadata = {
@@ -12,7 +13,8 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   const { children } = props
 
   // Fetch theme and generate CSS in one call with default hex format
-  const themeCSS = await getThemeCSS('oklch')
+  const theme = await getTheme()
+  const themeCSS = generateThemeCSS(theme, 'oklch')
 
   return (
     <html lang="en">

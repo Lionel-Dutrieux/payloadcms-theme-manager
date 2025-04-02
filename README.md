@@ -5,20 +5,234 @@ A powerful and flexible theme management system for PayloadCMS that enables dyna
 ## Key Features
 
 - 🎨 **Dynamic Theme Management**: Full control over your site's theme through the PayloadCMS admin panel
-- 🎯 **CSS Variables**: Manage colors and sizes with built-in validation
+- 🎯 **CSS Variables**: Manage colors and sizes with built-in validation and multiple color formats (HEX, HSL, OKLCH, RGB)
 - 🌓 **Light/Dark Mode**: Seamless support for light and dark color schemes
 - 🎭 **Theme Presets**: Ready-to-use theme presets with both light and dark variants
 - ⚡ **Next.js Integration**: Optimized performance with Next.js API and caching
 - 🔒 **Type-Safe**: Complete TypeScript support for enhanced developer experience
 - 🌍 **Multilingual**: Admin interface available in English, French, and Dutch
 - 🚀 **Performance-Focused**: Efficient caching and minimal runtime impact
+- 🎯 **Color Format Support**: Multiple color format support (HEX, HSL, OKLCH, RGB)
+- 🔄 **Real-time Preview**: Live preview of theme changes in the admin panel
+
+## Project Structure
+
+```bash
+src/
+├── features/
+│   └── theme/
+│       ├── api/          # API endpoints and handlers
+│       ├── components/   # React components for theme management
+│       ├── config/       # Theme configuration and presets
+│       ├── models/       # PayloadCMS models and TypeScript types
+│       └── utils/        # Utility functions for color handling and CSS generation
+├── globals/
+│   └── Theme.ts         # PayloadCMS Theme global configuration
+```
+
+## Installation
+
+1. Install the required dependencies:
+
+```bash
+pnpm install chroma-js @types/chroma-js --save
+```
+
+2. Copy the theme management system files to your PayloadCMS project.
+
+3. Add the Theme global to your PayloadCMS configuration:
+
+```typescript
+import { Theme } from '@/globals/Theme'
+
+export default buildConfig({
+  globals: [
+    Theme,
+    // ... other globals
+  ],
+})
+```
+
+## Theme Configuration
+
+The theme system is built around a flexible configuration system that supports:
+
+### Color Management
+
+- Multiple color formats (HEX, HSL, OKLCH, RGB)
+- Automatic color format conversion
+- Color validation
+- Light and dark mode variants
+
+```typescript
+// Example color configuration
+colors: {
+  light: {
+    primary: '#0070f3',
+    primaryForeground: '#ffffff',
+    secondary: '#f5f5f5',
+    secondaryForeground: '#000000',
+  },
+  dark: {
+    primary: '#0070f3',
+    primaryForeground: '#ffffff',
+    secondary: '#1a1a1a',
+    secondaryForeground: '#ffffff',
+  }
+}
+```
+
+### Size Management
+
+- Configurable size variables
+- Support for any CSS unit
+- Consistent sizing across themes
+
+```typescript
+sizes: {
+  radius: '0.5rem',
+  radiusLg: '0.75rem',
+  radiusSm: '0.25rem',
+}
+```
+
+## Theme Presets
+
+The system includes a powerful preset system:
+
+```typescript
+export interface ThemePreset {
+  id: string
+  name: {
+    en: string
+    fr: string
+    nl: string
+  }
+  colors: {
+    light: ThemeColors
+    dark: ThemeColors
+  }
+  sizes: ThemeSizes
+}
+```
+
+### Using Presets
+
+1. Navigate to the Theme global in the PayloadCMS admin panel
+2. Enable the theme
+3. Select a preset from the dropdown
+4. Or choose "Custom Theme" to create your own
+
+### Creating Custom Presets
+
+Add your presets in `src/features/theme/config/presets.ts`:
+
+```typescript
+export const themePresets: ThemePreset[] = [
+  {
+    id: 'my-theme',
+    name: {
+      en: 'My Theme',
+      fr: 'Mon Thème',
+      nl: 'Mijn Thema',
+    },
+    colors: {
+      light: {
+        // Light mode colors
+      },
+      dark: {
+        // Dark mode colors
+      },
+    },
+    sizes: {
+      // Size variables
+    },
+  },
+]
+```
+
+## CSS Generation
+
+The theme system automatically generates CSS variables based on your configuration:
+
+```css
+:root {
+  --primary: #0070f3;
+  --primary-foreground: #ffffff;
+  /* ... other variables */
+}
+
+.dark {
+  --primary: #60a5fa;
+  --primary-foreground: #000000;
+  /* ... other variables */
+}
+```
+
+## Usage in Components
+
+### React/Next.js Components
+
+```tsx
+const Button = styled.button`
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border-radius: var(--radius);
+`
+```
+
+### Tailwind CSS
+
+```tsx
+<div className="bg-[var(--primary)] text-[var(--primary-foreground)] rounded-[var(--radius)]">
+  Themed Component
+</div>
+```
+
+## Performance Considerations
+
+The theme system is optimized for performance:
+
+- CSS variables are generated server-side
+- Theme changes trigger automatic cache invalidation
+- Minimal client-side JavaScript
+- Efficient color format conversions
+
+## Type Safety
+
+The system provides complete TypeScript support:
+
+```typescript
+import { ThemeColors, ThemeSizes, ColorFormats } from '@/features/theme/models/types'
+
+// Type-safe color formats
+type ColorFormat = 'hex' | 'hsl' | 'oklch' | 'rgb'
+
+// Type-safe theme configuration
+interface ExtendedTheme {
+  settings?: {
+    enabled?: boolean | null
+    usePreset?: 'custom' | string | null
+  }
+  colors?: ThemeColors
+  sizes?: ThemeSizes
+}
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+MIT License - see LICENSE file for details
 
 ## Showcase
 
-[Watch the video](https://i.lionel-dutrieux.com/u/rUvNbh.mp4) if it's not displayed above.
+[Watch the video](https://i.lionel-dutrieux.com/u/1KCgpp.mp4) if it's not displayed above.
 
 <video width="100%" controls>
-  <source src="https://i.lionel-dutrieux.com/u/cIkAIm.mov" type="video/mp4">
+  <source src="https://i.lionel-dutrieux.com/u/1KCgpp.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
@@ -30,13 +244,14 @@ Copy these core files to your PayloadCMS project:
 
 ```bash
 src/
-├── constants/
-│   ├── themeConstants.ts    # Core theme configuration
-│   └── themePresets.ts     # Theme presets definitions
-├── globals/
-│   └── Theme.ts            # PayloadCMS global configuration
-└── lib/
-    └── ThemeManager.ts     # Theme management and CSS generation
+├── features/
+│   └── theme/
+│       ├── server.ts       # Server-side exports
+│       ├── client.ts       # Client-side exports
+│       ├── shared.ts       # Shared types and utilities
+│       ├── config/         # Theme configuration
+│       ├── models/         # PayloadCMS models
+│       └── utils/          # Utility functions
 ```
 
 ### 2. Configure PayloadCMS
@@ -44,7 +259,7 @@ src/
 Add the Theme global to your PayloadCMS configuration:
 
 ```typescript
-import { Theme } from './globals/Theme'
+import { Theme } from '@/globals/Theme'
 
 export default buildConfig({
   globals: [
@@ -58,130 +273,24 @@ export default buildConfig({
 
 ```tsx
 // app/layout.tsx
-import { getThemeCSS } from '@/lib/ThemeManager'
+import { generateThemeCSS, getTheme } from '@/features/theme/server'
+import { ThemeProvider } from '@/features/theme/client'
+import { type ThemeMode } from '@/features/theme/shared'
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  const themeCSS = await getThemeCSS()
-  
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const theme = await getTheme()
+  const themeCSS = generateThemeCSS(theme)
+
   return (
     <html lang="en">
       <head>
         <style dangerouslySetInnerHTML={{ __html: themeCSS }} />
       </head>
-      <body>{children}</body>
+      <body>
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
     </html>
   )
-}
-```
-
-## Theme Presets
-
-The theme system includes a powerful preset system that allows you to define and use pre-configured themes. Each preset includes both light and dark mode variants.
-
-### Using Theme Presets
-
-1. In the PayloadCMS admin panel, navigate to the Theme global
-2. Enable the theme using the checkbox
-3. Choose a preset from the dropdown menu
-4. Save your changes
-
-### Creating Custom Presets
-
-Add your own theme presets by modifying `src/constants/themePresets.ts`:
-
-```typescript
-export const themePresets: ThemePreset[] = [
-  {
-    id: 'my-custom-theme',
-    name: 'My Custom Theme',
-    colors: {
-      light: {
-        background: '#ffffff',
-        foreground: '#000000',
-        primary: '#3b82f6',
-        primaryForeground: '#ffffff',
-        // ... other color variables
-      },
-      dark: {
-        background: '#000000',
-        foreground: '#ffffff',
-        primary: '#60a5fa',
-        primaryForeground: '#000000',
-        // ... other color variables
-      }
-    },
-    sizes: {
-      radius: '0.5rem',
-    },
-  },
-  // ... other presets
-]
-```
-
-### Theme Color Structure
-
-Each preset must implement the `ThemeColors` interface:
-
-```typescript
-export type ThemeColors = {
-  background: string
-  foreground: string
-  card: string
-  cardForeground: string
-  popover: string
-  popoverForeground: string
-  primary: string
-  primaryForeground: string
-  secondary: string
-  secondaryForeground: string
-  muted: string
-  mutedForeground: string
-  accent: string
-  accentForeground: string
-  destructive: string
-  border: string
-  input: string
-  ring: string
-}
-```
-
-### Adding New Color Variables
-
-1. Add the new variable to the `ThemeColors` type in `themePresets.ts`:
-```typescript
-export type ThemeColors = {
-  // ... existing colors
-  newColor: string
-  newColorForeground: string
-}
-```
-
-2. Add the CSS variable mapping in `themeConstants.ts`:
-```typescript
-export const cssKeys = {
-  // ... existing keys
-  newColor: '--new-color',
-  newColorForeground: '--new-color-foreground',
-}
-```
-
-3. Update all theme presets with the new colors:
-```typescript
-colors: {
-  light: {
-    // ... existing colors
-    newColor: '#value',
-    newColorForeground: '#value',
-  },
-  dark: {
-    // ... existing colors
-    newColor: '#value',
-    newColorForeground: '#value',
-  }
 }
 ```
 
@@ -197,12 +306,12 @@ Example output:
 
 ```css
 :root {
-  --primary: #3B82F6;
+  --primary: #3b82f6;
   --radius: 0.625rem;
 }
 
 .dark {
-  --primary: #60A5FA;
+  --primary: #60a5fa;
   --radius: 0.625rem;
 }
 ```
@@ -210,6 +319,7 @@ Example output:
 ## Usage Examples
 
 ### In CSS/SCSS
+
 ```css
 .component {
   background-color: var(--primary);
@@ -218,43 +328,34 @@ Example output:
 ```
 
 ### In Tailwind CSS
+
 ```tsx
-<div className="bg-[var(--primary)] rounded-[var(--radius)]">
-  Themed Component
-</div>
+<div className="bg-[var(--primary)] rounded-[var(--radius)]">Themed Component</div>
 ```
 
 ### In Styled Components
+
 ```tsx
 const ThemedButton = styled.button`
   background-color: var(--primary);
   border-radius: var(--radius);
-`;
+`
 ```
 
 ## Dark Mode Integration
 
-Implement dark mode toggling with next-themes:
+Implement dark mode toggling:
 
 ```tsx
-import { ThemeProvider } from 'next-themes'
+// app/components/ThemeToggle.tsx
+'use client'
 
-export function Providers({ children }: { children: React.ReactNode }) {
-  return (
-    <ThemeProvider attribute="class">
-      {children}
-    </ThemeProvider>
-  )
-}
+import { useTheme } from '@/features/theme/client'
+import { type ThemeMode } from '@/features/theme/shared'
 
-// Theme toggle component
 const ThemeToggle = () => {
   const { theme, setTheme } = useTheme()
-  return (
-    <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-      Toggle theme
-    </button>
-  )
+  return <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>Toggle theme</button>
 }
 ```
 
@@ -291,12 +392,3 @@ export const themeConfig = {
   },
 }
 ```
-
-## Performance
-
-The theme system is optimized for performance:
-
-- 🚀 7-day cache duration (configurable)
-- 🔄 Smart cache invalidation
-- ⚡ On-demand CSS generation
-- 📦 Minimal bundle impact

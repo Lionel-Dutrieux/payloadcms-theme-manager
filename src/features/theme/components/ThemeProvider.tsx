@@ -1,56 +1,55 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
+import { THEME_MODES, ThemeMode } from '../config/constants'
 
-type Theme = 'dark' | 'light'
-
-type ThemeProviderProps = {
+interface ThemeProviderProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode
-  defaultTheme?: Theme
+  defaultTheme?: ThemeMode
   storageKey?: string
 }
 
-type ThemeProviderState = {
-  theme: Theme
-  setTheme: (theme: Theme) => void
+interface ThemeProviderState {
+  theme: ThemeMode
+  setTheme: (theme: ThemeMode) => void
 }
 
 const initialState: ThemeProviderState = {
-  theme: 'light',
+  theme: THEME_MODES.LIGHT,
   setTheme: () => null,
 }
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
 
 // Safe localStorage access
-const getStoredTheme = (key: string, fallback: Theme): Theme => {
+const getStoredTheme = (key: string, fallback: ThemeMode): ThemeMode => {
   if (typeof window === 'undefined') return fallback
   try {
-    const theme = window.localStorage.getItem(key) as Theme
+    const theme = window.localStorage.getItem(key) as ThemeMode
     return theme || fallback
   } catch (e) {
     // Handle localStorage access errors
-    console.warn('Failed to access localStorage:', e)
+    console.warn('[Theme] Failed to access localStorage:', e)
     return fallback
   }
 }
 
-const storeTheme = (key: string, theme: Theme): void => {
+const storeTheme = (key: string, theme: ThemeMode): void => {
   if (typeof window === 'undefined') return
   try {
     window.localStorage.setItem(key, theme)
   } catch (e) {
-    console.warn('Failed to store theme:', e)
+    console.warn('[Theme] Failed to store theme:', e)
   }
 }
 
 export function ThemeProvider({
   children,
-  defaultTheme = 'light',
+  defaultTheme = THEME_MODES.LIGHT,
   storageKey = 'theme-preference',
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(() => getStoredTheme(storageKey, defaultTheme))
+  const [theme, setTheme] = useState<ThemeMode>(() => getStoredTheme(storageKey, defaultTheme))
   const [mounted, setMounted] = useState(false)
 
   // Only run after mount to avoid hydration mismatch
@@ -60,13 +59,13 @@ export function ThemeProvider({
 
   useEffect(() => {
     const root = window.document.documentElement
-    root.classList.remove('light', 'dark')
+    root.classList.remove(THEME_MODES.LIGHT, THEME_MODES.DARK)
     root.classList.add(theme)
   }, [theme])
 
   const value = {
     theme,
-    setTheme: (theme: Theme) => {
+    setTheme: (theme: ThemeMode) => {
       storeTheme(storageKey, theme)
       setTheme(theme)
     },
@@ -87,8 +86,7 @@ export function ThemeProvider({
 export const useTheme = () => {
   const context = useContext(ThemeProviderContext)
 
-  if (context === undefined)
-    throw new Error('useTheme must be used within a ThemeProvider')
+  if (context === undefined) throw new Error('useTheme must be used within a ThemeProvider')
 
   return context
-} 
+}
