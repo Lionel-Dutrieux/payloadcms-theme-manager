@@ -1,18 +1,16 @@
-import { Theme } from '../payload-types'
 import configPromise from '@payload-config'
+import { revalidateTag, unstable_cache } from 'next/cache'
 import { getPayload } from 'payload'
-import { unstable_cache, revalidateTag } from 'next/cache'
 import {
   cssKeys,
-  ThemeColorKey,
-  sizeCssKeys,
-  ThemeSizeKey,
-  THEME_MODES,
   DARK_MODE_ENABLED,
-  getColorVariableName,
+  sizeCssKeys,
+  ThemeColorKey,
+  ThemeSizeKey,
 } from '../constants/themeConstants'
+import { getPresetById, PresetValue, ThemeColors } from '../constants/themePresets'
 import { ThemeSizes } from '../globals/Theme'
-import { getPresetById, ThemeColors, PresetValue } from '../constants/themePresets'
+import { Theme } from '../payload-types'
 
 // Fix for the Theme type until payload-types.ts is regenerated
 // This extends the existing Theme type to include the sizes property
@@ -73,18 +71,33 @@ export const invalidateThemeCache = () => {
 }
 
 /**
- * Convert theme colors to CSS variables
+ * Convert theme colors to CSS variables with specified format
  */
-function generateColorVariables(colors: ThemeColors): string[] {
-  return Object.entries(colors).map(([key, value]) => {
-    return `${cssKeys[key as ThemeColorKey]}: ${value};`
-  })
+function generateColorVariables(
+  colors: ThemeColors,
+  format: 'hex' | 'hsl' | 'oklch' = 'hex',
+): string[] {
+  return Object.entries(colors)
+    .map(([key, value]) => {
+      if (!value) return ''
+      try {
+        const colorData = JSON.parse(value)
+        return `${cssKeys[key as ThemeColorKey]}: ${colorData[format] || colorData.hex};`
+      } catch {
+        // If not JSON, assume it's a legacy hex value
+        return `${cssKeys[key as ThemeColorKey]}: ${value};`
+      }
+    })
+    .filter(Boolean)
 }
 
 /**
  * Generate CSS variables from theme object
  */
-export function generateThemeCSS(theme: ExtendedTheme | null): string {
+export function generateThemeCSS(
+  theme: ExtendedTheme | null,
+  format: 'hex' | 'hsl' | 'oklch' = 'hex',
+): string {
   // Return empty string if theme is null or disabled
   if (!theme || !theme.settings?.enabled) {
     console.log('[ThemeManager] Theme is null or disabled:', { theme })
@@ -100,8 +113,8 @@ export function generateThemeCSS(theme: ExtendedTheme | null): string {
     }
 
     // Generate CSS from preset
-    const lightVars = generateColorVariables(preset.colors.light)
-    const darkVars = DARK_MODE_ENABLED ? generateColorVariables(preset.colors.dark) : []
+    const lightVars = generateColorVariables(preset.colors.light, format)
+    const darkVars = DARK_MODE_ENABLED ? generateColorVariables(preset.colors.dark, format) : []
 
     // Add sizes
     Object.entries(preset.sizes).forEach(([key, value]) => {
@@ -153,7 +166,13 @@ export function generateThemeCSS(theme: ExtendedTheme | null): string {
     const lightValue = colors?.[lightFieldName as keyof typeof colors]
 
     if (lightValue) {
-      lightVars.push(`${cssKeys[key]}: ${lightValue};`)
+      try {
+        const colorData = JSON.parse(lightValue as string)
+        lightVars.push(`${cssKeys[key]}: ${colorData[format] || colorData.hex};`)
+      } catch {
+        // If not JSON, assume it's a legacy hex value
+        lightVars.push(`${cssKeys[key]}: ${lightValue};`)
+      }
     }
 
     // Process dark mode values if dark mode is enabled
@@ -161,9 +180,21 @@ export function generateThemeCSS(theme: ExtendedTheme | null): string {
       const darkValue = colors?.[darkFieldName as keyof typeof colors]
 
       if (darkValue) {
-        darkVars.push(`${cssKeys[key]}: ${darkValue};`)
+        try {
+          const colorData = JSON.parse(darkValue as string)
+          darkVars.push(`${cssKeys[key]}: ${colorData[format] || colorData.hex};`)
+        } catch {
+          // If not JSON, assume it's a legacy hex value
+          darkVars.push(`${cssKeys[key]}: ${darkValue};`)
+        }
       } else if (lightValue) {
-        darkVars.push(`${cssKeys[key]}: ${lightValue};`)
+        try {
+          const colorData = JSON.parse(lightValue as string)
+          darkVars.push(`${cssKeys[key]}: ${colorData[format] || colorData.hex};`)
+        } catch {
+          // If not JSON, assume it's a legacy hex value
+          darkVars.push(`${cssKeys[key]}: ${lightValue};`)
+        }
       }
     }
   })
@@ -208,7 +239,7 @@ export function generateThemeCSS(theme: ExtendedTheme | null): string {
 /**
  * Convenience method to fetch and generate CSS in one call
  */
-export async function getThemeCSS(): Promise<string> {
+export async function getThemeCSS(format: 'hex' | 'hsl' | 'oklch' = 'hex'): Promise<string> {
   const theme = await getTheme()
-  return generateThemeCSS(theme)
+  return generateThemeCSS(theme, format)
 }

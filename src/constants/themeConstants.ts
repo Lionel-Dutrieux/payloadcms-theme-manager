@@ -419,10 +419,24 @@ export type ThemeSizeKey = keyof typeof themeConfig.sizes
 // Helper function to validate hex color codes
 const validateHexColor = (value: string | null | undefined): true | string => {
   if (!value) return true
-  // Basic hex color validation
-  if (!/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(value)) {
-    return `Please enter a valid hex color code (e.g. #FF00DD)`
+
+  try {
+    // Try to parse as JSON first (new format)
+    const parsed = JSON.parse(value)
+    if (parsed && typeof parsed === 'object' && parsed.hex) {
+      // Validate the hex value from the color object
+      if (!/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(parsed.hex)) {
+        return `Please enter a valid hex color code (e.g. #FF00DD)`
+      }
+      return true
+    }
+  } catch {
+    // If not JSON, validate as legacy hex color
+    if (!/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(value)) {
+      return `Please enter a valid hex color code (e.g. #FF00DD)`
+    }
   }
+
   return true
 }
 

@@ -1,7 +1,7 @@
-import React from 'react'
-import './styles.css'
-import { getThemeCSS } from '../../lib/ThemeManager'
 import { ThemeProvider } from '@/providers/ThemeProvider'
+import React from 'react'
+import { getThemeCSS } from '../../lib/ThemeManager'
+import './styles.css'
 
 export const metadata = {
   description: 'A blank template using Payload in a Next.js app.',
@@ -11,8 +11,8 @@ export const metadata = {
 export default async function RootLayout(props: { children: React.ReactNode }) {
   const { children } = props
 
-  // Fetch theme and generate CSS in one call
-  const themeCSS = await getThemeCSS()
+  // Fetch theme and generate CSS in one call with default hex format
+  const themeCSS = await getThemeCSS('oklch')
 
   return (
     <html lang="en">
@@ -25,9 +25,9 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
       </head>
       <body>
         <main>
-        <ThemeProvider defaultTheme="light" storageKey="theme-preference">
-          {children}
-        </ThemeProvider>
+          <ThemeProvider defaultTheme="light" storageKey="theme-preference">
+            {children}
+          </ThemeProvider>
         </main>
       </body>
     </html>
