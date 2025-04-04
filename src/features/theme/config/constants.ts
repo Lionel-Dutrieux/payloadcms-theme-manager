@@ -47,14 +47,7 @@ export type ThemeColorKey =
   | 'sidebarBorder'
 
 // Theme size keys
-export type ThemeSizeKey =
-  | 'radius'
-  | 'radiusLg'
-  | 'radiusSm'
-  | 'radiusXl'
-  | 'radiusXs'
-  | 'radiusXxl'
-  | 'radiusXxs'
+export type ThemeSizeKey = 'radius'
 
 // Theme configuration
 export const themeConfig = {

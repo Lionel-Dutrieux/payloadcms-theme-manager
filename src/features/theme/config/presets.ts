@@ -94,8 +94,6 @@ const defaultPreset: ThemePreset = {
   },
   sizes: {
     radius: '0.5rem',
-    radiusLg: '0.75rem',
-    radiusSm: '0.25rem',
   },
 }
 
@@ -176,8 +174,6 @@ const luxinnovationPreset: ThemePreset = {
   },
   sizes: {
     radius: '0.5rem',
-    radiusLg: '0.75rem',
-    radiusSm: '0.25rem',
   },
 }
 
@@ -258,8 +254,6 @@ const computerlandPreset: ThemePreset = {
   },
   sizes: {
     radius: '0.375rem',
-    radiusLg: '0.5rem',
-    radiusSm: '0.25rem',
   },
 }
 
